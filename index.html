@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-content>
+                <v-container>
+                    <v-layout column>
+                        <v-card>
+                            <v-layout column pa-3>
+                                <v-flex>
+                                    Params Recieved
+                                </v-flex>
+                                <v-flex>
+                                    {{parsedParams}}
+                                </v-flex>
+                                <v-layout column>
+                        </v-card>
+
+                        <v-flex>
+                            <v-layout column pa-3>
+                                <v-flex>
+                                    <a :href="linkToNative">{{linkToNative}}</a>
+                                </v-flex>
+                                <v-flex>Link to Open Android Native App</v-flex>
+                            </v-layout>
+                        </v-flex>
+
+                        <v-card>
+                            <v-layout column pa-3 mt-3>
+                                <v-flex>
+                                    <v-flex>Intent</v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="intent" solo></v-text-field>
+                                    </v-flex>
+                                </v-flex>
+
+                                <v-flex>
+                                    <v-flex>Host</v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="host" solo></v-text-field>
+                                    </v-flex>
+                                </v-flex>
+
+                                <v-flex>
+                                    <v-flex>Package</v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="package" solo></v-text-field>
+                                    </v-flex>
+                                </v-flex>
+
+                                <v-flex>
+                                    <v-flex>Component</v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="component" solo></v-text-field>
+                                    </v-flex>
+                                </v-flex>
+
+                                <v-flex>
+                                    <v-flex>Action</v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="action" solo></v-text-field>
+                                    </v-flex>
+                                </v-flex>
+
+                                <v-flex>
+                                    <v-flex>Category</v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="category" solo></v-text-field>
+                                    </v-flex>
+                                </v-flex>
+                            </v-layout>
+                        </v-card>
+                        <v-flex mb2>
+                            <v-flex>
+                                <a href="https://developer.android.com/guide/components/intents-filters">Intents Documentation</a>
+                            </v-flex>
+                        </v-flex>
+                        </v-layout>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+
+            data: () => ({
+                'scheme': null,
+                'intent': 'intent',
+                'host': 'host',
+                'package': null,
+                'action': null,
+                'component': null,
+                'category': null,
+            }),
+
+            computed: {
+                linkToNativeParams() {
+                    return ['scheme', 'package', 'action', 'component', 'category'].reduce((arr, cur) => {
+                        if (this[cur]) arr = `${arr}${cur}=${this[cur]};`
+                        return arr
+                    }, '')
+                },
+
+
+                linkToNative() {
+                    return `${this.intent}://${this.host}/#Intent;${this.linkToNativeParams}end`
+                },
+
+                parsedParams() {
+                    return window.location.search
+                }
+
+            }
+        })
+    </script>
+</body>
+
+</html>
+
+
+<script>
+    if (navigator.serviceWorker.controller) {
+        console.log('[CPN] active service worker found, no need to register')
+    }
+    else {
+        //Register the ServiceWorker
+        navigator.serviceWorker.register('service-worker.js', {
+            scope: './'
+        }).then(function(reg) {
+            console.log('Service worker has been registered for scope:' + reg.scope);
+        });
+    }
+</script>
